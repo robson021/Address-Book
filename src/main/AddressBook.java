@@ -25,7 +25,7 @@ public class AddressBook extends JFrame {
     private ButtonGroup radioButtonGroup;
     private JComboBox comboBox;
     private JCheckBox family, friends, work;
-    private JButton addButton, deleteButton, fullInfoButton;
+    private JButton addButton, deleteButton, fullInfoButton, searchButton;
 
     private JTextField searchField;
     private JList listOfContacts;
@@ -118,6 +118,9 @@ public class AddressBook extends JFrame {
         buttonPanel2.add(addButton);
         buttonPanel2.add(deleteButton);
 
+        searchButton = new JButton("Szukaj");
+        searchButton.addActionListener(new SearchButtonAction());
+
         centerPanel.add(buttonPanel2, gbc);
         gbc.gridy++;
 
@@ -128,10 +131,13 @@ public class AddressBook extends JFrame {
 
         leftPanel.add(new JLabel("Filter:"), gbc);
         gbc.gridy++;
+        gbc.gridx = 0;
         searchField = new JTextField(DEFAULT_COLUMN_SIZE);
         leftPanel.add(searchField, gbc);
         gbc.gridy++;
         gbc.gridx = 0;
+        leftPanel.add(searchButton, gbc);
+        gbc.gridy++;
 
         initListOfContacts();
 
@@ -146,6 +152,7 @@ public class AddressBook extends JFrame {
 
         JPanel buttonPanel3 = new JPanel(new FlowLayout());
         fullInfoButton = new JButton("Info");
+        fullInfoButton.addActionListener(new InfoButtonAction());
         buttonPanel3.add(fullInfoButton);
         leftPanel.add(buttonPanel3, gbc);
         gbc.gridy++;
@@ -155,8 +162,10 @@ public class AddressBook extends JFrame {
 
     private void initListOfContacts() {
         Person p = new Person();
+        List<Categories> catergories = new ArrayList<>();
+        catergories.add(Categories.FRIEND);
         p.setAddress("Jakas Ulica 43");
-        p.setCategory(Categories.FRIEND);
+        p.setCategory(catergories);
         p.setEmail("liszka@gmail.com");
         p.setName("Małgorzata");
         p.setSurname("Liszka");
@@ -166,7 +175,7 @@ public class AddressBook extends JFrame {
 
         Person p2 = new Person();
         p2.setAddress("Jakas Ulica 33");
-        p2.setCategory(Categories.FAMILY);
+        p2.setCategory(catergories);
         p2.setEmail("nowak@gmail.com");
         p2.setName("Robert");
         p2.setSurname("Nowak");
@@ -213,7 +222,26 @@ public class AddressBook extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (validateFields()) {
+                Person p = new Person();
+                p.setEmail(email.getText().trim());
+                p.setTitle((Titles) comboBox.getSelectedItem());
+                String[] ns = nameSurnameTextField.getText().trim().split(" ");
+                p.setName(ns[0]);
+                p.setSurname(ns[1]);
+                p.setPhoneNo(phoneNo.getText().trim());
 
+
+                List<Categories> categories = new ArrayList<>();
+
+                if (friends.isSelected()) categories.add(Categories.FRIEND);
+                if (family.isSelected()) categories.add(Categories.FAMILY);
+                if (work.isSelected()) categories.add(Categories.WORK);
+
+                p.setCategory(categories);
+
+                personList.add(p);
+
+                System.out.println("Person added: " + p.toString());
             } else {
                 JOptionPane.showMessageDialog(mainFrame, "Błędnie wypełniona pola!");
             }
@@ -224,8 +252,37 @@ public class AddressBook extends JFrame {
     private class DeleteButtonAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            //TODO removing people
+        }
+    }
 
+    private class SearchButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            List<Person> persons = new ArrayList<>();
+            String text = searchField.getText().trim().toLowerCase();
+            System.out.println(text);
+            for (Person person : personList) {
+                System.out.println(person.toString());
+                if (person.getName().toLowerCase().equals(text) || person.getSurname().toLowerCase().equals(text))
+                    persons.add(person);
+            }
+            if (persons.isEmpty()) {
+                JOptionPane.showMessageDialog(mainFrame, "Nic nie znaleziono.");
+            } else {
+                DefaultListModel model = new DefaultListModel();
+                for (Person person : persons)
+                    model.addElement(person);
+                listOfContacts.setModel(model);
+            }
+        }
+    }
 
+    private class InfoButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String text = listOfContacts.getSelectedValue().toString();
+            JOptionPane.showMessageDialog(mainFrame, text);
         }
     }
 }

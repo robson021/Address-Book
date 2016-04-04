@@ -3,12 +3,14 @@ package model;
 import enums.Categories;
 import enums.Titles;
 
+import java.util.List;
+
 /**
  * Created by robert on 04.04.16.
  */
 public class Person {
     private String name, surname, email, address, phoneNo;
-    private Categories category;
+    private List<Categories> category;
     private Titles title;
 
     public Person() {
@@ -60,11 +62,11 @@ public class Person {
         this.phoneNo = phoneNo;
     }
 
-    public Categories getCategory() {
+    public List<Categories> getCategory() {
         return category;
     }
 
-    public void setCategory(Categories category) {
+    public void setCategory(List<Categories> category) {
         this.category = category;
     }
 
