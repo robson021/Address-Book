@@ -6,6 +6,8 @@ import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class AddressBook extends JFrame {
     private ButtonGroup radioButtonGroup;
     private JComboBox comboBox;
     private JCheckBox family, friends, work;
-    private JButton addButton, deleteButton;
+    private JButton addButton, deleteButton, fullInfoButton;
 
     private JTextField searchField;
     private JList listOfContacts;
@@ -110,6 +112,9 @@ public class AddressBook extends JFrame {
         addButton = new JButton("Dodaj");
         deleteButton = new JButton("Usuń");
 
+        addButton.addActionListener(new AddButtonAction());
+        deleteButton.addActionListener(new DeleteButtonAction());
+
         buttonPanel2.add(addButton);
         buttonPanel2.add(deleteButton);
 
@@ -137,6 +142,13 @@ public class AddressBook extends JFrame {
         listOfContacts.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 
         leftPanel.add(listOfContacts, gbc);
+        gbc.gridy++;
+
+        JPanel buttonPanel3 = new JPanel(new FlowLayout());
+        fullInfoButton = new JButton("Info");
+        buttonPanel3.add(fullInfoButton);
+        leftPanel.add(buttonPanel3, gbc);
+        gbc.gridy++;
 
         this.add(leftPanel, BorderLayout.WEST);
     }
@@ -183,5 +195,37 @@ public class AddressBook extends JFrame {
                 mainFrame.setVisible(true);
             }
         });
+    }
+
+    private boolean validateFields() {
+        if (nameSurnameTextField.getText().trim() == "") return false;
+        String[] ns = nameSurnameTextField.getText().split(" ");
+        if (ns.length != 2) return false;
+        if (phoneNo.getText().trim() == "") return false;
+        String e = email.getText().trim();
+        if (e == "" || !e.contains("@")) return false;
+        if (address.getText().trim() == "") return false;
+
+        return true;
+    }
+
+    private class AddButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (validateFields()) {
+
+            } else {
+                JOptionPane.showMessageDialog(mainFrame, "Błędnie wypełniona pola!");
+            }
+
+        }
+    }
+
+    private class DeleteButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+
+        }
     }
 }
