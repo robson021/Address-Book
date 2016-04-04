@@ -2,9 +2,12 @@ package main;
 
 import enums.Categories;
 import enums.Titles;
+import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by robert on 04.04.16.
@@ -15,12 +18,17 @@ public class AddressBook extends JFrame {
     private static final int DEFAULT_COLUMN_SIZE = 15;
     private static JFrame mainFrame;
 
-    private JPanel centerPanel;
+    private JPanel centerPanel, leftPanel;
     private JTextField nameSurnameTextField, phoneNo, address, email;
     private ButtonGroup radioButtonGroup;
     private JComboBox comboBox;
     private JCheckBox family, friends, work;
     private JButton addButton, deleteButton;
+
+    private JTextField searchField;
+    private JList listOfContacts;
+
+    private static final List<Person> personList = new ArrayList<>();
 
     public AddressBook() {
         super(TITLE);
@@ -109,6 +117,50 @@ public class AddressBook extends JFrame {
         gbc.gridy++;
 
         this.add(centerPanel, BorderLayout.CENTER);
+
+        leftPanel = new JPanel(new GridBagLayout());
+        gbc.gridy = gbc.gridx = 0;
+
+        leftPanel.add(new JLabel("Filter:"), gbc);
+        gbc.gridy++;
+        searchField = new JTextField(DEFAULT_COLUMN_SIZE);
+        leftPanel.add(searchField, gbc);
+        gbc.gridy++;
+        gbc.gridx = 0;
+
+        initListOfContacts();
+
+        listOfContacts = new JList(personList.toArray());
+        listOfContacts.setFixedCellWidth(DEFAULT_COLUMN_SIZE * 15);
+        listOfContacts.setFixedCellHeight(listOfContacts.getFixedCellWidth() / 4);
+        listOfContacts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listOfContacts.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+
+        leftPanel.add(listOfContacts, gbc);
+
+        this.add(leftPanel, BorderLayout.WEST);
+    }
+
+    private void initListOfContacts() {
+        Person p = new Person();
+        p.setAddress("Jakas Ulica 43");
+        p.setCategory(Categories.FRIEND);
+        p.setEmail("liszka@gmail.com");
+        p.setName("Małgorzata");
+        p.setSurname("Liszka");
+        p.setTitle(Titles.NONE);
+
+        personList.add(p);
+
+        Person p2 = new Person();
+        p2.setAddress("Jakas Ulica 33");
+        p2.setCategory(Categories.FAMILY);
+        p2.setEmail("nowak@gmail.com");
+        p2.setName("Robert");
+        p2.setSurname("Nowak");
+        p2.setTitle(Titles.NONE);
+
+        personList.add(p2);
     }
 
     public static String getTITLE() {

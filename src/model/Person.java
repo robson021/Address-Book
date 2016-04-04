@@ -14,6 +14,12 @@ public class Person {
     public Person() {
     }
 
+    @Override
+    public String toString() {
+        return name + " " + surname + "; " + email + "; " + phoneNo + "; " +
+                category.toString() + "; " + title.toString();
+    }
+
     public String getName() {
         return name;
     }
